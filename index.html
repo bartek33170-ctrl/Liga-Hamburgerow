@@ -16,7 +16,7 @@
 body {
     font-family: Arial, sans-serif;
     background: #101010;
-    color: #fff;
+    color: white;
 }
 
 header {
@@ -124,6 +124,11 @@ textarea {
     border-radius: 6px;
 }
 
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
 label {
     display: block;
     color: #ddd;
@@ -153,8 +158,26 @@ label {
     border-radius: 6px;
 }
 
-.primary:hover {
-    background: #f0ca45;
+.small {
+    color: #999;
+    font-size: 13px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.admin-box {
+    border: 1px solid #d4af37;
+    background: #151515;
+}
+
+.admin-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 table {
@@ -205,28 +228,6 @@ tr:hover {
     color: #ddd;
 }
 
-.admin-box {
-    border: 1px solid #d4af37;
-    background: #151515;
-}
-
-.admin-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.small {
-    color: #999;
-    font-size: 13px;
-}
-
 .team-box {
     background: #111;
     border: 1px solid #333;
@@ -235,23 +236,26 @@ tr:hover {
     margin-bottom: 12px;
 }
 
-.player-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 8px 0;
+.staff-box {
+    background: #181818;
+    border: 1px solid #333;
+    border-radius: 7px;
+    padding: 10px;
+    margin-top: 8px;
+}
+
+.staff-row {
+    padding: 7px 0;
     border-bottom: 1px solid #292929;
 }
 
-.badge {
-    display: inline-block;
-    padding: 3px 7px;
-    border-radius: 5px;
-    background: #333;
-    color: #ddd;
-    font-size: 12px;
-    margin-left: 4px;
+.staff-row:last-child {
+    border-bottom: none;
+}
+
+.player-row {
+    padding: 8px 0;
+    border-bottom: 1px solid #292929;
 }
 
 .lineup-player {
@@ -280,6 +284,12 @@ tr:hover {
     padding: 25px;
 }
 
+hr {
+    border: 0;
+    border-top: 1px solid #333;
+    margin: 15px 0;
+}
+
 @media (max-width: 600px) {
     header h1 {
         font-size: 25px;
@@ -291,8 +301,8 @@ tr:hover {
 
     th,
     td {
-        padding: 8px 4px;
-        font-size: 12px;
+        padding: 7px 3px;
+        font-size: 11px;
     }
 }
 </style>
@@ -316,28 +326,35 @@ tr:hover {
 <main>
 
 <section id="home" class="section active">
+
     <div class="card hero">
         <h2>WITAJ W <span class="gold">LIDZE HAMBURGERÓW</span></h2>
-        <p>Sprawdzaj wyniki meczów, tabelę oraz informacje o drużynach.</p>
+        <p>
+            Wyniki meczów, tabela, drużyny, składy i wydarzenia.
+        </p>
     </div>
 
     <div class="card">
         <h2>🏆 O LIDZE</h2>
         <p>
             Oficjalna strona wyników Ligi Hamburgerów.
-            Wyniki, tabela, składy i wydarzenia meczowe.
         </p>
     </div>
+
 </section>
 
 <section id="matches" class="section">
+
     <div class="card">
         <h2>⚽ MECZE</h2>
+
         <div id="matchesList"></div>
     </div>
+
 </section>
 
 <section id="table" class="section">
+
     <div class="card">
         <h2>🏆 TABELA LIGI</h2>
 
@@ -360,27 +377,35 @@ tr:hover {
             <tbody id="tableBody"></tbody>
         </table>
     </div>
+
 </section>
 
 <section id="teams" class="section">
+
     <div class="card">
         <h2>👥 DRUŻYNY</h2>
+
         <div id="teamsList"></div>
     </div>
-</section><section id="admin" class="section">
+
+</section>
+
+<section id="admin" class="section">
 
     <div id="loginBox" class="card admin-box">
+
         <h2>🔐 PANEL ADMINISTRATORA</h2>
 
         <p class="small">
-            Panel przeznaczony tylko dla administratora ligi.
+            Tylko administrator może zmieniać dane ligi.
         </p>
 
         <label>Kod administratora</label>
+
         <input
             type="password"
             id="adminCode"
-            placeholder="Wpisz kod"
+            placeholder="Wpisz kod administratora"
         >
 
         <button class="primary" onclick="loginAdmin()">
@@ -388,76 +413,145 @@ tr:hover {
         </button>
 
         <p id="loginMessage" class="small"></p>
+
     </div>
 
     <div id="adminPanel" class="hidden">
 
         <div class="card admin-box">
+
             <div class="admin-title">
+
                 <div>
                     <h2>⚙️ PANEL ADMINISTRATORA</h2>
+
                     <p class="small">
-                        Jesteś zalogowany jako administrator.
+                        Zalogowany administrator
                     </p>
                 </div>
 
-                <button class="danger" onclick="logoutAdmin()">
+                <button
+                    class="danger"
+                    onclick="logoutAdmin()"
+                >
                     WYLOGUJ
                 </button>
-            </div>
-        </div>
 
-        <div class="card">
+            </div>
+
+        </div>        <div class="card">
+
             <h2>➕ DODAJ DRUŻYNĘ</h2>
 
             <label>Nazwa drużyny</label>
+
             <input
                 type="text"
                 id="newTeamName"
                 placeholder="np. FC TUCHÓW"
             >
 
-            <button class="primary" onclick="addTeam()">
+            <button
+                class="primary"
+                onclick="addTeam()"
+            >
                 DODAJ DRUŻYNĘ
             </button>
+
         </div>
 
+
         <div class="card">
+
             <h2>👤 DODAJ ZAWODNIKA</h2>
 
             <label>Drużyna</label>
+
             <select id="playerTeam"></select>
 
             <label>Imię i nazwisko</label>
+
             <input
                 type="text"
                 id="playerName"
                 placeholder="np. Kacper Hekłowski"
             >
 
-            <button class="primary" onclick="addPlayer()">
+            <button
+                class="primary"
+                onclick="addPlayer()"
+            >
                 DODAJ ZAWODNIKA
             </button>
 
             <p class="small">
-                Numer zawodnika NIE jest tutaj przypisywany.
-                Numer wybieramy dopiero przy konkretnym meczu.
+                Numer zawodnika nie jest przypisywany tutaj.
+                Numer wybierasz dopiero przy konkretnym meczu.
             </p>
+
         </div>
 
+
         <div class="card">
+
+            <h2>👔 DODAJ OSOBĘ DO SZTABU</h2>
+
+            <label>Drużyna</label>
+
+            <select id="staffTeam"></select>
+
+            <label>Funkcja w sztabie</label>
+
+            <input
+                type="text"
+                id="staffRole"
+                placeholder="np. Trener, trener bramkarzy, kierownik..."
+            >
+
+            <label>Imię i nazwisko</label>
+
+            <input
+                type="text"
+                id="staffName"
+                placeholder="np. Bartłomiej Hekłowski"
+            >
+
+            <button
+                class="primary"
+                onclick="addStaff()"
+            >
+                DODAJ DO SZTABU
+            </button>
+
+            <p class="small">
+                Tylko administrator może dodawać osoby do sztabu.
+                Możesz dodać dowolną liczbę osób i dowolne funkcje.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
             <h2>⚽ DODAJ MECZ</h2>
 
             <label>Gospodarze</label>
+
             <select id="homeTeam"></select>
 
             <label>Goście</label>
+
             <select id="awayTeam"></select>
 
             <label>Data meczu</label>
-            <input type="date" id="matchDate">
+
+            <input
+                type="date"
+                id="matchDate"
+            >
 
             <label>Wynik gospodarzy</label>
+
             <input
                 type="number"
                 id="homeScore"
@@ -466,6 +560,7 @@ tr:hover {
             >
 
             <label>Wynik gości</label>
+
             <input
                 type="number"
                 id="awayScore"
@@ -473,69 +568,84 @@ tr:hover {
                 value="0"
             >
 
-            <label>Trener gospodarzy</label>
-            <input
-                type="text"
-                id="homeCoach"
-                placeholder="np. Bartłomiej Hekłowski"
+            <button
+                class="primary"
+                onclick="addMatch()"
             >
-
-            <label>Trener gości</label>
-            <input
-                type="text"
-                id="awayCoach"
-                placeholder="np. Imię i nazwisko"
-            >
-
-            <button class="primary" onclick="addMatch()">
                 DODAJ MECZ
             </button>
+
         </div>
 
+
         <div class="card">
+
+            <h2>👔 SZTABY DRUŻYN</h2>
+
+            <div id="staffManagement"></div>
+
+        </div>
+
+
+        <div class="card">
+
             <h2>👕 SKŁADY MECZOWE</h2>
 
             <p class="small">
-                Po dodaniu meczu wybierz zawodników, numery,
-                bramkarza, kapitana, trenera oraz wydarzenia.
+                Tutaj wybierasz zawodników, numery,
+                bramkarza, kapitana oraz sztab na konkretny mecz.
             </p>
 
             <div id="matchManagement"></div>
+
         </div>
 
+
         <div class="card">
+
             <h2>🗑️ ZARZĄDZANIE DANYMI</h2>
 
-            <button class="danger" onclick="clearAllData()">
+            <button
+                class="danger"
+                onclick="clearAllData()"
+            >
                 USUŃ WSZYSTKIE DANE
             </button>
 
             <p class="small">
-                Uwaga: ta operacja usuwa drużyny, zawodników i mecze
-                zapisane w tej przeglądarce.
+                Usuwa wszystkie dane zapisane w tej przeglądarce.
             </p>
+
         </div>
 
     </div>
+
 </section>
 
 </main>
 
+
 <script>
 
-const ADMIN_CODE = "1234";
+const ADMIN_CODE = "ligahamburgerow26/27";
+
 
 let teams = JSON.parse(
     localStorage.getItem("ligaTeams") || "[]"
 );
 
+
 let matches = JSON.parse(
     localStorage.getItem("ligaMatches") || "[]"
 );
 
-let isAdmin = sessionStorage.getItem("ligaAdmin") === "true";
+
+let isAdmin =
+    sessionStorage.getItem("ligaAdmin") === "true";
+
 
 function saveData() {
+
     localStorage.setItem(
         "ligaTeams",
         JSON.stringify(teams)
@@ -547,13 +657,16 @@ function saveData() {
     );
 }
 
+
 function showSection(id) {
 
-    document.querySelectorAll(".section").forEach(section => {
-        section.classList.remove("active");
-    });
+    document.querySelectorAll(".section")
+        .forEach(section => {
+            section.classList.remove("active");
+        });
 
-    const selected = document.getElementById(id);
+    const selected =
+        document.getElementById(id);
 
     if (selected) {
         selected.classList.add("active");
@@ -576,9 +689,11 @@ function showSection(id) {
     }
 }
 
+
 function loginAdmin() {
 
-    const code = document.getElementById("adminCode").value;
+    const code =
+        document.getElementById("adminCode").value;
 
     if (code === ADMIN_CODE) {
 
@@ -591,17 +706,19 @@ function loginAdmin() {
 
         document.getElementById("adminCode").value = "";
 
-        document.getElementById("loginMessage").textContent =
-            "Zalogowano poprawnie.";
+        document.getElementById("loginMessage")
+            .textContent = "Zalogowano poprawnie.";
 
         updateAdminView();
 
     } else {
 
-        document.getElementById("loginMessage").textContent =
+        document.getElementById("loginMessage")
+            .textContent =
             "❌ Nieprawidłowy kod administratora.";
     }
 }
+
 
 function logoutAdmin() {
 
@@ -612,25 +729,35 @@ function logoutAdmin() {
     updateAdminView();
 }
 
+
 function updateAdminView() {
 
-    const loginBox = document.getElementById("loginBox");
-    const adminPanel = document.getElementById("adminPanel");
+    const loginBox =
+        document.getElementById("loginBox");
+
+    const adminPanel =
+        document.getElementById("adminPanel");
 
     if (isAdmin) {
 
         loginBox.classList.add("hidden");
+
         adminPanel.classList.remove("hidden");
 
         updateTeamSelects();
+
+        renderStaffManagement();
+
         renderMatchManagement();
 
     } else {
 
         loginBox.classList.remove("hidden");
+
         adminPanel.classList.add("hidden");
     }
 }
+
 
 function addTeam() {
 
@@ -639,16 +766,20 @@ function addTeam() {
     const input =
         document.getElementById("newTeamName");
 
-    const name = input.value.trim();
+    const name =
+        input.value.trim();
 
     if (!name) {
         alert("Wpisz nazwę drużyny.");
         return;
     }
 
-    const exists = teams.some(
-        team => team.name.toLowerCase() === name.toLowerCase()
-    );
+    const exists =
+        teams.some(
+            team =>
+                team.name.toLowerCase() ===
+                name.toLowerCase()
+        );
 
     if (exists) {
         alert("Taka drużyna już istnieje.");
@@ -656,9 +787,15 @@ function addTeam() {
     }
 
     teams.push({
+
         id: Date.now(),
+
         name: name,
-        players: []
+
+        players: [],
+
+        staff: []
+
     });
 
     saveData();
@@ -666,35 +803,54 @@ function addTeam() {
     input.value = "";
 
     updateTeamSelects();
+
     renderTeams();
+
+    renderStaffManagement();
 
     alert("Drużyna została dodana.");
 }
+
 
 function addPlayer() {
 
     if (!isAdmin) return;
 
     const teamId =
-        Number(document.getElementById("playerTeam").value);
+        Number(
+            document.getElementById("playerTeam").value
+        );
 
     const name =
-        document.getElementById("playerName").value.trim();
+        document.getElementById("playerName")
+            .value.trim();
 
     if (!teamId || !name) {
-        alert("Wybierz drużynę i wpisz zawodnika.");
+
+        alert(
+            "Wybierz drużynę i wpisz zawodnika."
+        );
+
         return;
     }
 
-    const team = teams.find(
-        t => t.id === teamId
-    );
+    const team =
+        teams.find(
+            t => t.id === teamId
+        );
 
     if (!team) return;
 
+    if (!team.players) {
+        team.players = [];
+    }
+
     team.players.push({
+
         id: Date.now(),
+
         name: name
+
     });
 
     saveData();
@@ -702,106 +858,147 @@ function addPlayer() {
     document.getElementById("playerName").value = "";
 
     renderTeams();
+
     renderMatchManagement();
 
     alert("Zawodnik został dodany.");
 }
 
-function addMatch() {
+
+function addStaff() {
 
     if (!isAdmin) return;
 
-    const homeId =
-        Number(document.getElementById("homeTeam").value);
+    const teamId =
+        Number(
+            document.getElementById("staffTeam").value
+        );
 
-    const awayId =
-        Number(document.getElementById("awayTeam").value);
+    const role =
+        document.getElementById("staffRole")
+            .value.trim();
 
-    const date =
-        document.getElementById("matchDate").value;
+    const name =
+        document.getElementById("staffName")
+            .value.trim();
 
-    const homeScore =
-        Number(document.getElementById("homeScore").value);
+    if (!teamId || !role || !name) {
 
-    const awayScore =
-        Number(document.getElementById("awayScore").value);
+        alert(
+            "Wybierz drużynę, wpisz funkcję i osobę."
+        );
 
-    const homeCoach =
-        document.getElementById("homeCoach").value.trim();
-
-    const awayCoach =
-        document.getElementById("awayCoach").value.trim();
-
-    if (!homeId || !awayId) {
-        alert("Wybierz obie drużyny.");
         return;
     }
 
-    if (homeId === awayId) {
-        alert("Drużyny nie mogą być takie same.");
-        return;
+    const team =
+        teams.find(
+            t => t.id === teamId
+        );
+
+    if (!team) return;
+
+    if (!team.staff) {
+        team.staff = [];
     }
 
-    const homeTeam =
-        teams.find(t => t.id === homeId);
+    team.staff.push({
 
-    const awayTeam =
-        teams.find(t => t.id === awayId);
-
-    if (!homeTeam || !awayTeam) return;
-
-    matches.push({
         id: Date.now(),
 
-        date: date,
+        role: role,
 
-        homeId: homeId,
-        awayId: awayId,
+        name: name
 
-        homeName: homeTeam.name,
-        awayName: awayTeam.name,
-
-        homeScore: homeScore,
-        awayScore: awayScore,
-
-        homeCoach: homeCoach,
-        awayCoach: awayCoach,
-
-        homeLineup: [],
-        awayLineup: [],
-
-        events: []
     });
 
     saveData();
 
-    document.getElementById("homeScore").value = 0;
-    document.getElementById("awayScore").value = 0;
-    document.getElementById("homeCoach").value = "";
-    document.getElementById("awayCoach").value = "";
+    document.getElementById("staffRole").value = "";
+
+    document.getElementById("staffName").value = "";
+
+    renderTeams();
+
+    renderStaffManagement();
+
+    alert("Osoba została dodana do sztabu.");
+}
+
+
+function deleteStaff(teamId, staffId) {
+
+    if (!isAdmin) return;
+
+    const team =
+        teams.find(
+            t => t.id === teamId
+        );
+
+    if (!team || !team.staff) return;
+
+    team.staff =
+        team.staff.filter(
+            person => person.id !== staffId
+        );
+
+    saveData();
+
+    renderTeams();
+
+    renderStaffManagement();
 
     renderMatchManagement();
-    renderMatches();
-    renderTable();
-
-    alert("Mecz został dodany.");
 }
+
+
+function deletePlayer(teamId, playerId) {
+
+    if (!isAdmin) return;
+
+    const team =
+        teams.find(
+            t => t.id === teamId
+        );
+
+    if (!team) return;
+
+    team.players =
+        team.players.filter(
+            player => player.id !== playerId
+        );
+
+    saveData();
+
+    renderTeams();
+
+    renderMatchManagement();
+}
+
 
 function updateTeamSelects() {
 
     const selects = [
+
         "playerTeam",
+
+        "staffTeam",
+
         "homeTeam",
+
         "awayTeam"
+
     ];
 
     selects.forEach(id => {
 
-        const select = document.getElementById(id);
+        const select =
+            document.getElementById(id);
 
         if (!select) return;
 
-        const current = select.value;
+        const current =
+            select.value;
 
         select.innerHTML =
             '<option value="">-- wybierz drużynę --</option>';
@@ -812,7 +1009,9 @@ function updateTeamSelects() {
                 document.createElement("option");
 
             option.value = team.id;
-            option.textContent = team.name;
+
+            option.textContent =
+                team.name;
 
             select.appendChild(option);
         });
@@ -821,7 +1020,110 @@ function updateTeamSelects() {
             select.value = current;
         }
     });
-}function renderTeams() {
+}function addMatch() {
+
+    if (!isAdmin) return;
+
+    const homeId =
+        Number(
+            document.getElementById("homeTeam").value
+        );
+
+    const awayId =
+        Number(
+            document.getElementById("awayTeam").value
+        );
+
+    const date =
+        document.getElementById("matchDate").value;
+
+    const homeScore =
+        Number(
+            document.getElementById("homeScore").value
+        );
+
+    const awayScore =
+        Number(
+            document.getElementById("awayScore").value
+        );
+
+    if (!homeId || !awayId) {
+
+        alert(
+            "Wybierz obie drużyny."
+        );
+
+        return;
+    }
+
+    if (homeId === awayId) {
+
+        alert(
+            "Drużyny nie mogą być takie same."
+        );
+
+        return;
+    }
+
+    const homeTeam =
+        teams.find(
+            t => t.id === homeId
+        );
+
+    const awayTeam =
+        teams.find(
+            t => t.id === awayId
+        );
+
+    if (!homeTeam || !awayTeam) return;
+
+    matches.push({
+
+        id: Date.now(),
+
+        date: date,
+
+        homeId: homeId,
+
+        awayId: awayId,
+
+        homeName: homeTeam.name,
+
+        awayName: awayTeam.name,
+
+        homeScore: homeScore,
+
+        awayScore: awayScore,
+
+        homeLineup: [],
+
+        awayLineup: [],
+
+        homeStaff: [],
+
+        awayStaff: [],
+
+        events: []
+
+    });
+
+    saveData();
+
+    document.getElementById("homeScore").value = 0;
+
+    document.getElementById("awayScore").value = 0;
+
+    renderMatchManagement();
+
+    renderMatches();
+
+    renderTable();
+
+    alert("Mecz został dodany.");
+}
+
+
+function renderTeams() {
 
     const container =
         document.getElementById("teamsList");
@@ -845,7 +1147,10 @@ function updateTeamSelects() {
 
         let playersHTML = "";
 
-        if (!team.players.length) {
+        if (
+            !team.players ||
+            !team.players.length
+        ) {
 
             playersHTML =
                 '<p class="small">Brak zawodników.</p>';
@@ -856,25 +1161,145 @@ function updateTeamSelects() {
 
                 playersHTML += `
                     <div class="player-row">
-                        <span>${escapeHTML(player.name)}</span>
+                        👤 ${escapeHTML(player.name)}
+                    </div>
+                `;
+            });
+        }
+
+        let staffHTML = "";
+
+        if (
+            !team.staff ||
+            !team.staff.length
+        ) {
+
+            staffHTML =
+                '<p class="small">Brak sztabu.</p>';
+
+        } else {
+
+            team.staff.forEach(person => {
+
+                staffHTML += `
+                    <div class="staff-row">
+                        👔 <b>
+                            ${escapeHTML(person.role)}
+                        </b>
+                        —
+                        ${escapeHTML(person.name)}
                     </div>
                 `;
             });
         }
 
         box.innerHTML = `
+
             <h3 class="gold">
                 ${escapeHTML(team.name)}
             </h3>
 
-            <div style="margin-top:10px">
+            <hr>
+
+            <b>👥 Zawodnicy</b>
+
+            <div style="margin-top:8px">
                 ${playersHTML}
             </div>
+
+            <hr>
+
+            <b>👔 Sztab</b>
+
+            <div class="staff-box">
+                ${staffHTML}
+            </div>
+
         `;
 
         container.appendChild(box);
     });
 }
+
+
+function renderStaffManagement() {
+
+    const container =
+        document.getElementById("staffManagement");
+
+    if (!container) return;
+
+    if (!teams.length) {
+
+        container.innerHTML =
+            '<div class="empty">Najpierw dodaj drużynę.</div>';
+
+        return;
+    }
+
+    container.innerHTML = "";
+
+    teams.forEach(team => {
+
+        const box =
+            document.createElement("div");
+
+        box.className = "team-box";
+
+        let html = `
+            <h3 class="gold">
+                ${escapeHTML(team.name)}
+            </h3>
+        `;
+
+        if (
+            !team.staff ||
+            !team.staff.length
+        ) {
+
+            html += `
+                <p class="small">
+                    Brak osób w sztabie.
+                </p>
+            `;
+
+        } else {
+
+            team.staff.forEach(person => {
+
+                html += `
+                    <div class="staff-row">
+
+                        👔
+                        <b>
+                            ${escapeHTML(person.role)}
+                        </b>
+
+                        —
+                        ${escapeHTML(person.name)}
+
+                        <button
+                            class="danger"
+                            style="float:right;padding:4px 8px"
+                            onclick="deleteStaff(
+                                ${team.id},
+                                ${person.id}
+                            )"
+                        >
+                            USUŃ
+                        </button>
+
+                    </div>
+                `;
+            });
+        }
+
+        box.innerHTML = html;
+
+        container.appendChild(box);
+    });
+}
+
 
 function renderMatches() {
 
@@ -884,7 +1309,9 @@ function renderMatches() {
     if (!matches.length) {
 
         container.innerHTML =
-            '<div class="empty">Nie rozegrano jeszcze żadnego meczu.</div>';
+            '<div class="empty">
+                Nie rozegrano jeszcze żadnego meczu.
+            </div>';
 
         return;
     }
@@ -902,39 +1329,47 @@ function renderMatches() {
 
             const dateText =
                 match.date
-                    ? new Date(match.date + "T00:00:00")
-                        .toLocaleDateString("pl-PL")
+                    ? new Date(
+                        match.date + "T00:00:00"
+                    ).toLocaleDateString("pl-PL")
                     : "Brak daty";
 
             let eventsHTML = "";
 
-            if (match.events && match.events.length) {
+            if (
+                match.events &&
+                match.events.length
+            ) {
 
                 match.events.forEach(event => {
 
-                    let icon = "•";
+                    let icon = "⚽";
 
-                    if (event.type === "goal") {
-                        icon = "⚽";
-                    }
-
-                    if (event.type === "yellow") {
+                    if (
+                        event.type === "yellow"
+                    ) {
                         icon = "🟨";
                     }
 
-                    if (event.type === "red") {
+                    if (
+                        event.type === "red"
+                    ) {
                         icon = "🟥";
                     }
 
                     eventsHTML += `
                         <div class="event">
                             ${icon}
-                            <b>${escapeHTML(event.player)}</b>
-                            — ${escapeHTML(event.team)}
+                            <b>
+                                ${escapeHTML(event.player)}
+                            </b>
+                            —
+                            ${escapeHTML(event.team)}
                         </div>
                     `;
                 });
             }
+
 
             const homeLineup =
                 lineupText(match.homeLineup);
@@ -942,75 +1377,172 @@ function renderMatches() {
             const awayLineup =
                 lineupText(match.awayLineup);
 
+
+            const homeStaff =
+                staffText(
+                    match.homeStaff
+                );
+
+            const awayStaff =
+                staffText(
+                    match.awayStaff
+                );
+
+
             box.innerHTML = `
+
                 <div class="match-date">
                     ${dateText}
                 </div>
 
                 <div>
-                    <b>${escapeHTML(match.homeName)}</b>
+                    <b>
+                        ${escapeHTML(match.homeName)}
+                    </b>
+
                     &nbsp; vs &nbsp;
-                    <b>${escapeHTML(match.awayName)}</b>
+
+                    <b>
+                        ${escapeHTML(match.awayName)}
+                    </b>
                 </div>
 
                 <div class="score">
-                    ${match.homeScore} : ${match.awayScore}
+                    ${match.homeScore}
+                    :
+                    ${match.awayScore}
                 </div>
 
-                <div class="small">
-                    👔 ${escapeHTML(match.homeCoach || "Brak trenera")}
-                    &nbsp; | &nbsp;
-                    ${escapeHTML(match.awayCoach || "Brak trenera")}
-                </div>
 
                 ${
                     eventsHTML
                     ? `
-                        <hr style="border-color:#333;margin:15px 0">
-                        <div>
-                            <b class="gold">Wydarzenia:</b>
-                            ${eventsHTML}
-                        </div>
+                        <hr>
+
+                        <b class="gold">
+                            Wydarzenia
+                        </b>
+
+                        ${eventsHTML}
                     `
                     : ""
                 }
 
+
                 ${
                     homeLineup || awayLineup
                     ? `
-                        <hr style="border-color:#333;margin:15px 0">
+                        <hr>
 
-                        <b class="gold">Składy:</b>
+                        <b class="gold">
+                            👕 Składy
+                        </b>
 
                         ${
                             homeLineup
-                            ? `<div style="margin-top:8px">
-                                <b>${escapeHTML(match.homeName)}</b>
-                                ${homeLineup}
-                            </div>`
+                            ? `
+                                <div style="margin-top:8px">
+                                    <b>
+                                        ${escapeHTML(match.homeName)}
+                                    </b>
+                                    ${homeLineup}
+                                </div>
+                            `
                             : ""
                         }
 
                         ${
                             awayLineup
-                            ? `<div style="margin-top:8px">
-                                <b>${escapeHTML(match.awayName)}</b>
-                                ${awayLineup}
-                            </div>`
+                            ? `
+                                <div style="margin-top:8px">
+                                    <b>
+                                        ${escapeHTML(match.awayName)}
+                                    </b>
+                                    ${awayLineup}
+                                </div>
+                            `
                             : ""
                         }
                     `
                     : ""
                 }
+
+
+                ${
+                    homeStaff || awayStaff
+                    ? `
+                        <hr>
+
+                        <b class="gold">
+                            👔 Sztab
+                        </b>
+
+                        ${
+                            homeStaff
+                            ? `
+                                <div style="margin-top:8px">
+                                    <b>
+                                        ${escapeHTML(match.homeName)}
+                                    </b>
+                                    ${homeStaff}
+                                </div>
+                            `
+                            : ""
+                        }
+
+                        ${
+                            awayStaff
+                            ? `
+                                <div style="margin-top:8px">
+                                    <b>
+                                        ${escapeHTML(match.awayName)}
+                                    </b>
+                                    ${awayStaff}
+                                </div>
+                            `
+                            : ""
+                        }
+                    `
+                    : ""
+                }
+
             `;
 
             container.appendChild(box);
         });
 }
 
+
+function staffText(staff) {
+
+    if (
+        !staff ||
+        !staff.length
+    ) {
+        return "";
+    }
+
+    return staff.map(person => `
+
+        <div class="event">
+            👔
+            <b>
+                ${escapeHTML(person.role)}
+            </b>
+            —
+            ${escapeHTML(person.name)}
+        </div>
+
+    `).join("");
+}
+
+
 function lineupText(lineup) {
 
-    if (!lineup || !lineup.length) {
+    if (
+        !lineup ||
+        !lineup.length
+    ) {
         return "";
     }
 
@@ -1028,15 +1560,24 @@ function lineupText(lineup) {
 
         return `
             <div class="event">
-                <b>#${escapeHTML(String(player.number))}</b>
+
+                <b>
+                    #${escapeHTML(
+                        String(player.number)
+                    )}
+                </b>
+
                 —
                 ${escapeHTML(player.name)}
+
                 ${tags}
+
             </div>
         `;
 
     }).join("");
 }
+
 
 function renderTable() {
 
@@ -1048,74 +1589,127 @@ function renderTable() {
     teams.forEach(team => {
 
         stats[team.id] = {
+
             id: team.id,
+
             name: team.name,
+
             matches: 0,
+
             wins: 0,
+
             draws: 0,
+
             losses: 0,
+
             gf: 0,
+
             ga: 0,
+
             points: 0
+
         };
     });
 
+
     matches.forEach(match => {
 
-        const home = stats[match.homeId];
-        const away = stats[match.awayId];
+        const home =
+            stats[match.homeId];
+
+        const away =
+            stats[match.awayId];
 
         if (!home || !away) return;
 
         home.matches++;
+
         away.matches++;
 
-        home.gf += Number(match.homeScore);
-        home.ga += Number(match.awayScore);
+        home.gf +=
+            Number(match.homeScore);
 
-        away.gf += Number(match.awayScore);
-        away.ga += Number(match.homeScore);
+        home.ga +=
+            Number(match.awayScore);
 
-        if (match.homeScore > match.awayScore) {
+        away.gf +=
+            Number(match.awayScore);
+
+        away.ga +=
+            Number(match.homeScore);
+
+
+        if (
+            match.homeScore >
+            match.awayScore
+        ) {
 
             home.wins++;
+
             home.points += 3;
+
             away.losses++;
 
-        } else if (match.homeScore < match.awayScore) {
+        } else if (
+            match.homeScore <
+            match.awayScore
+        ) {
 
             away.wins++;
+
             away.points += 3;
+
             home.losses++;
 
         } else {
 
             home.draws++;
+
             away.draws++;
 
             home.points++;
+
             away.points++;
         }
     });
 
+
     const rows =
-        Object.values(stats).sort((a, b) => {
+        Object.values(stats).sort(
+            (a, b) => {
 
-            if (b.points !== a.points) {
-                return b.points - a.points;
+                if (
+                    b.points !==
+                    a.points
+                ) {
+                    return (
+                        b.points -
+                        a.points
+                    );
+                }
+
+                const aDiff =
+                    a.gf - a.ga;
+
+                const bDiff =
+                    b.gf - b.ga;
+
+                if (
+                    bDiff !== aDiff
+                ) {
+                    return (
+                        bDiff -
+                        aDiff
+                    );
+                }
+
+                return b.gf - a.gf;
             }
+        );
 
-            const aDiff = a.gf - a.ga;
-            const bDiff = b.gf - b.ga;
-
-            if (bDiff !== aDiff) {
-                return bDiff - aDiff;
-            }
-
-            return b.gf - a.gf;
-        });
 
     tbody.innerHTML = "";
+
 
     if (!rows.length) {
 
@@ -1130,32 +1724,77 @@ function renderTable() {
         return;
     }
 
-    rows.forEach((team, index) => {
 
-        const diff =
-            team.gf - team.ga;
+    rows.forEach(
+        (team, index) => {
 
-        tbody.innerHTML += `
-            <tr>
-                <td><b>${index + 1}</b></td>
-                <td><b>${escapeHTML(team.name)}</b></td>
-                <td>${team.matches}</td>
-                <td>${team.wins}</td>
-                <td>${team.draws}</td>
-                <td>${team.losses}</td>
-                <td>${team.gf}</td>
-                <td>${team.ga}</td>
-                <td>${diff}</td>
-                <td><b class="gold">${team.points}</b></td>
-            </tr>
-        `;
-    });
+            const diff =
+                team.gf - team.ga;
+
+            tbody.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        <b>
+                            ${index + 1}
+                        </b>
+                    </td>
+
+                    <td>
+                        <b>
+                            ${escapeHTML(team.name)}
+                        </b>
+                    </td>
+
+                    <td>
+                        ${team.matches}
+                    </td>
+
+                    <td>
+                        ${team.wins}
+                    </td>
+
+                    <td>
+                        ${team.draws}
+                    </td>
+
+                    <td>
+                        ${team.losses}
+                    </td>
+
+                    <td>
+                        ${team.gf}
+                    </td>
+
+                    <td>
+                        ${team.ga}
+                    </td>
+
+                    <td>
+                        ${diff}
+                    </td>
+
+                    <td>
+                        <b class="gold">
+                            ${team.points}
+                        </b>
+                    </td>
+
+                </tr>
+
+            `;
+        }
+    );
 }
+
 
 function renderMatchManagement() {
 
     const container =
-        document.getElementById("matchManagement");
+        document.getElementById(
+            "matchManagement"
+        );
 
     if (!matches.length) {
 
@@ -1177,35 +1816,80 @@ function renderMatchManagement() {
             box.className = "team-box";
 
             box.innerHTML = `
+
                 <h3 class="gold">
+
                     ${escapeHTML(match.homeName)}
+
                     ${match.homeScore}
+
                     :
+
                     ${match.awayScore}
+
                     ${escapeHTML(match.awayName)}
+
                 </h3>
 
-                <p class="small">
-                    Zarządzanie składem i wydarzeniami
-                </p>
-
                 <div style="margin-top:15px">
-                    <h3>👕 ${escapeHTML(match.homeName)}</h3>
-                    <div id="homeLineup-${match.id}"></div>
+
+                    <h3>
+                        👕 ${escapeHTML(match.homeName)}
+                    </h3>
+
+                    <div
+                        id="homeLineup-${match.id}"
+                    ></div>
+
                 </div>
 
-                <div style="margin-top:20px">
-                    <h3>👕 ${escapeHTML(match.awayName)}</h3>
-                    <div id="awayLineup-${match.id}"></div>
-                </div>
 
                 <div style="margin-top:20px">
-                    <h3>⚽ Wydarzenia</h3>
-                    <div id="events-${match.id}"></div>
+
+                    <h3>
+                        👕 ${escapeHTML(match.awayName)}
+                    </h3>
+
+                    <div
+                        id="awayLineup-${match.id}"
+                    ></div>
+
+                </div>
+
+
+                <div style="margin-top:20px">
+
+                    <h3>
+                        👔 Sztab
+                    </h3>
+
+                    <div
+                        id="homeStaff-${match.id}"
+                    ></div>
+
+                    <div
+                        id="awayStaff-${match.id}"
+                        style="margin-top:15px"
+                    ></div>
+
+                </div>
+
+
+                <div style="margin-top:20px">
+
+                    <h3>
+                        ⚽ Wydarzenia
+                    </h3>
+
+                    <div
+                        id="events-${match.id}"
+                    ></div>
+
                 </div>
             `;
 
             container.appendChild(box);
+
 
             renderLineupEditor(
                 match,
@@ -1215,6 +1899,7 @@ function renderMatchManagement() {
                 )
             );
 
+
             renderLineupEditor(
                 match,
                 "away",
@@ -1223,16 +1908,34 @@ function renderMatchManagement() {
                 )
             );
 
+
+            renderStaffEditor(
+                match,
+                "home",
+                document.getElementById(
+                    `homeStaff-${match.id}`
+                )
+            );
+
+
+            renderStaffEditor(
+                match,
+                "away",
+                document.getElementById(
+                    `awayStaff-${match.id}`
+                )
+            );
+
+
             renderEventsEditor(
                 match,
                 document.getElementById(
                     `events-${match.id}`
                 )
             );
-        });
-}
 
-function renderLineupEditor(
+        });
+}function renderLineupEditor(
     match,
     side,
     container
@@ -1244,7 +1947,9 @@ function renderLineupEditor(
             : match.awayId;
 
     const team =
-        teams.find(t => t.id === teamId);
+        teams.find(
+            t => t.id === teamId
+        );
 
     if (!team) return;
 
@@ -1253,60 +1958,68 @@ function renderLineupEditor(
             ? match.homeLineup
             : match.awayLineup;
 
-    const title =
-        side === "home"
-            ? match.homeName
-            : match.awayName;
+    if (!lineup) {
+        lineup = [];
+    }
 
-    let html = `
-        <div class="small">
-            ${escapeHTML(title)}
-        </div>
-    `;
+    let html = "";
 
-    if (!team.players.length) {
+    if (
+        !team.players ||
+        !team.players.length
+    ) {
 
-        html += `
-            <p class="small">
-                Ta drużyna nie ma jeszcze zawodników.
-            </p>
-        `;
+        container.innerHTML =
+            '<p class="small">Brak zawodników.</p>';
 
-        container.innerHTML = html;
         return;
     }
+
 
     team.players.forEach(player => {
 
         const existing =
             lineup.find(
-                p => p.playerId === player.id
+                p =>
+                    p.playerId ===
+                    player.id
             );
 
+
         const checked =
-            existing ? "checked" : "";
+            existing
+                ? "checked"
+                : "";
+
 
         const number =
             existing
                 ? existing.number
                 : "";
 
+
         const goalkeeper =
-            existing && existing.goalkeeper
+            existing &&
+            existing.goalkeeper
                 ? "checked"
                 : "";
+
 
         const captain =
-            existing && existing.captain
+            existing &&
+            existing.captain
                 ? "checked"
                 : "";
 
+
         html += `
+
             <div class="lineup-player">
 
-                <div>
-                    <b>${escapeHTML(player.name)}</b>
-                </div>
+                <b>
+                    ${escapeHTML(player.name)}
+                </b>
+
 
                 <label>
                     Numer w tym meczu
@@ -1321,48 +2034,80 @@ function renderLineupEditor(
                     placeholder="np. 1"
                 >
 
+
                 <div class="check-row">
+
                     <input
                         type="checkbox"
                         id="selected-${match.id}-${side}-${player.id}"
                         ${checked}
                     >
-                    <span>W składzie</span>
+
+                    <span>
+                        W składzie
+                    </span>
+
                 </div>
 
+
                 <div class="check-row">
+
                     <input
                         type="checkbox"
                         id="gk-${match.id}-${side}-${player.id}"
                         ${goalkeeper}
                     >
-                    <span>🧤 Bramkarz</span>
+
+                    <span>
+                        🧤 Bramkarz
+                    </span>
+
                 </div>
 
+
                 <div class="check-row">
+
                     <input
                         type="checkbox"
                         id="captain-${match.id}-${side}-${player.id}"
                         ${captain}
                     >
-                    <span>🏅 Kapitan</span>
+
+                    <span>
+                        🏅 Kapitan
+                    </span>
+
                 </div>
 
             </div>
+
         `;
     });
 
+
     html += `
+
         <button
             class="primary"
-            onclick="saveLineup(${match.id}, '${side}', ${team.id})"
+            onclick="
+                saveLineup(
+                    ${match.id},
+                    '${side}',
+                    ${team.id}
+                )
+            "
         >
             ZAPISZ SKŁAD
         </button>
+
     `;
 
+
     container.innerHTML = html;
-}function saveLineup(
+}
+
+
+function saveLineup(
     matchId,
     side,
     teamId
@@ -1371,17 +2116,23 @@ function renderLineupEditor(
     if (!isAdmin) return;
 
     const match =
-        matches.find(m => m.id === matchId);
+        matches.find(
+            m => m.id === matchId
+        );
 
     const team =
-        teams.find(t => t.id === teamId);
+        teams.find(
+            t => t.id === teamId
+        );
 
     if (!match || !team) return;
 
     const newLineup = [];
 
     let goalkeeperCount = 0;
+
     let captainCount = 0;
+
 
     team.players.forEach(player => {
 
@@ -1392,73 +2143,101 @@ function renderLineupEditor(
 
         if (!selected) return;
 
+
         const number =
             document.getElementById(
                 `num-${matchId}-${side}-${player.id}`
             ).value;
+
 
         const goalkeeper =
             document.getElementById(
                 `gk-${matchId}-${side}-${player.id}`
             ).checked;
 
+
         const captain =
             document.getElementById(
                 `captain-${matchId}-${side}-${player.id}`
             ).checked;
 
+
         if (!number) {
+
             alert(
                 "Każdy zawodnik w składzie musi mieć numer."
             );
+
             return;
         }
+
 
         if (goalkeeper) {
             goalkeeperCount++;
         }
 
+
         if (captain) {
             captainCount++;
         }
 
+
         newLineup.push({
-            playerId: player.id,
-            name: player.name,
-            number: number,
-            goalkeeper: goalkeeper,
-            captain: captain
+
+            playerId:
+                player.id,
+
+            name:
+                player.name,
+
+            number:
+                number,
+
+            goalkeeper:
+                goalkeeper,
+
+            captain:
+                captain
+
         });
+
     });
+
 
     if (goalkeeperCount > 1) {
 
         alert(
-            "W jednej drużynie może być tylko jeden bramkarz."
+            "Możesz wybrać tylko jednego bramkarza."
         );
 
         return;
     }
+
 
     if (captainCount > 1) {
 
         alert(
-            "W jednej drużynie może być tylko jeden kapitan."
+            "Możesz wybrać tylko jednego kapitana."
         );
 
         return;
     }
 
-    const numbers =
-        newLineup.map(p => String(p.number));
 
-    const duplicateNumber =
+    const numbers =
+        newLineup.map(
+            p => String(p.number)
+        );
+
+
+    const duplicate =
         numbers.some(
             (number, index) =>
                 numbers.indexOf(number) !== index
         );
 
-    if (duplicateNumber) {
+
+    if (duplicate) {
 
         alert(
             "Dwóch zawodników nie może mieć tego samego numeru."
@@ -1467,19 +2246,224 @@ function renderLineupEditor(
         return;
     }
 
+
     if (side === "home") {
-        match.homeLineup = newLineup;
+
+        match.homeLineup =
+            newLineup;
+
     } else {
-        match.awayLineup = newLineup;
+
+        match.awayLineup =
+            newLineup;
     }
+
 
     saveData();
 
     renderMatches();
+
     renderMatchManagement();
 
-    alert("Skład został zapisany.");
+    alert(
+        "Skład został zapisany."
+    );
 }
+
+
+function renderStaffEditor(
+    match,
+    side,
+    container
+) {
+
+    const teamId =
+        side === "home"
+            ? match.homeId
+            : match.awayId;
+
+
+    const team =
+        teams.find(
+            t => t.id === teamId
+        );
+
+
+    if (!team) return;
+
+
+    if (!team.staff) {
+        team.staff = [];
+    }
+
+
+    const selected =
+        side === "home"
+            ? (match.homeStaff || [])
+            : (match.awayStaff || []);
+
+
+    let html = "";
+
+
+    if (!team.staff.length) {
+
+        html += `
+            <p class="small">
+                Ta drużyna nie ma jeszcze osób w sztabie.
+                Dodaj je wyżej w panelu administratora.
+            </p>
+        `;
+
+    } else {
+
+        team.staff.forEach(person => {
+
+            const checked =
+                selected.some(
+                    p =>
+                        p.staffId ===
+                        person.id
+                )
+                    ? "checked"
+                    : "";
+
+
+            html += `
+
+                <div class="check-row">
+
+                    <input
+                        type="checkbox"
+                        id="staff-${match.id}-${side}-${person.id}"
+                        ${checked}
+                    >
+
+                    <span>
+
+                        👔
+                        <b>
+                            ${escapeHTML(person.role)}
+                        </b>
+
+                        —
+                        ${escapeHTML(person.name)}
+
+                    </span>
+
+                </div>
+
+            `;
+        });
+    }
+
+
+    html += `
+
+        <button
+            class="primary"
+            onclick="
+                saveMatchStaff(
+                    ${match.id},
+                    '${side}',
+                    ${team.id}
+                )
+            "
+        >
+            ZAPISZ SZTAB
+        </button>
+
+    `;
+
+
+    container.innerHTML = html;
+}
+
+
+function saveMatchStaff(
+    matchId,
+    side,
+    teamId
+) {
+
+    if (!isAdmin) return;
+
+
+    const match =
+        matches.find(
+            m => m.id === matchId
+        );
+
+
+    const team =
+        teams.find(
+            t => t.id === teamId
+        );
+
+
+    if (!match || !team) return;
+
+
+    if (!team.staff) {
+        team.staff = [];
+    }
+
+
+    const selected = [];
+
+
+    team.staff.forEach(person => {
+
+        const checkbox =
+            document.getElementById(
+                `staff-${matchId}-${side}-${person.id}`
+            );
+
+
+        if (
+            checkbox &&
+            checkbox.checked
+        ) {
+
+            selected.push({
+
+                staffId:
+                    person.id,
+
+                role:
+                    person.role,
+
+                name:
+                    person.name
+
+            });
+        }
+    });
+
+
+    if (side === "home") {
+
+        match.homeStaff =
+            selected;
+
+    } else {
+
+        match.awayStaff =
+            selected;
+    }
+
+
+    saveData();
+
+    renderMatches();
+
+    renderMatchManagement();
+
+    alert(
+        "Sztab meczu został zapisany."
+    );
+}
+
 
 function renderEventsEditor(
     match,
@@ -1488,50 +2472,104 @@ function renderEventsEditor(
 
     let html = "";
 
-    if (match.events && match.events.length) {
 
-        match.events.forEach((event, index) => {
+    if (
+        match.events &&
+        match.events.length
+    ) {
 
-            let icon = "⚽";
+        match.events.forEach(
+            (event, index) => {
 
-            if (event.type === "yellow") {
-                icon = "🟨";
+                let icon = "⚽";
+
+
+                if (
+                    event.type === "yellow"
+                ) {
+                    icon = "🟨";
+                }
+
+
+                if (
+                    event.type === "red"
+                ) {
+                    icon = "🟥";
+                }
+
+
+                html += `
+
+                    <div class="event">
+
+                        ${icon}
+
+                        ${escapeHTML(
+                            event.player
+                        )}
+
+                        —
+                        ${escapeHTML(
+                            event.team
+                        )}
+
+                        <button
+                            class="danger"
+                            style="
+                                padding:4px 8px;
+                                margin-left:8px
+                            "
+                            onclick="
+                                deleteEvent(
+                                    ${match.id},
+                                    ${index}
+                                )
+                            "
+                        >
+                            X
+                        </button>
+
+                    </div>
+
+                `;
             }
-
-            if (event.type === "red") {
-                icon = "🟥";
-            }
-
-            html += `
-                <div class="event">
-                    ${icon}
-                    ${escapeHTML(event.player)}
-                    — ${escapeHTML(event.team)}
-
-                    <button
-                        class="danger"
-                        style="padding:4px 8px;margin-left:8px"
-                        onclick="deleteEvent(${match.id}, ${index})"
-                    >
-                        X
-                    </button>
-                </div>
-            `;
-        });
+        );
     }
 
-    html += `
-        <label>Rodzaj wydarzenia</label>
 
-        <select id="eventType-${match.id}">
-            <option value="goal">⚽ Gol</option>
-            <option value="yellow">🟨 Żółta kartka</option>
-            <option value="red">🟥 Czerwona kartka</option>
+    html += `
+
+        <label>
+            Rodzaj wydarzenia
+        </label>
+
+        <select
+            id="eventType-${match.id}"
+        >
+
+            <option value="goal">
+                ⚽ Gol
+            </option>
+
+            <option value="yellow">
+                🟨 Żółta kartka
+            </option>
+
+            <option value="red">
+                🟥 Czerwona kartka
+            </option>
+
         </select>
 
-        <label>Drużyna</label>
 
-        <select id="eventTeam-${match.id}">
+        <label>
+            Drużyna
+        </label>
+
+        <select
+            id="eventTeam-${match.id}"
+        >
+
             <option value="home">
                 ${escapeHTML(match.homeName)}
             </option>
@@ -1539,9 +2577,13 @@ function renderEventsEditor(
             <option value="away">
                 ${escapeHTML(match.awayName)}
             </option>
+
         </select>
 
-        <label>Zawodnik</label>
+
+        <label>
+            Zawodnik
+        </label>
 
         <input
             type="text"
@@ -1549,40 +2591,59 @@ function renderEventsEditor(
             placeholder="Imię i nazwisko zawodnika"
         >
 
+
         <button
             class="primary"
-            onclick="addEvent(${match.id})"
+            onclick="
+                addEvent(${match.id})
+            "
         >
             DODAJ WYDARZENIE
         </button>
+
     `;
+
 
     container.innerHTML = html;
 }
+
 
 function addEvent(matchId) {
 
     if (!isAdmin) return;
 
+
     const match =
-        matches.find(m => m.id === matchId);
+        matches.find(
+            m => m.id === matchId
+        );
+
 
     if (!match) return;
+
+
+    if (!match.events) {
+        match.events = [];
+    }
+
 
     const type =
         document.getElementById(
             `eventType-${matchId}`
         ).value;
 
+
     const teamSide =
         document.getElementById(
             `eventTeam-${matchId}`
         ).value;
 
+
     const player =
         document.getElementById(
             `eventPlayer-${matchId}`
         ).value.trim();
+
 
     if (!player) {
 
@@ -1593,24 +2654,38 @@ function addEvent(matchId) {
         return;
     }
 
+
     const team =
         teamSide === "home"
             ? match.homeName
             : match.awayName;
 
+
     match.events.push({
-        type: type,
-        player: player,
-        team: team
+
+        type:
+            type,
+
+        player:
+            player,
+
+        team:
+            team
+
     });
+
 
     saveData();
 
     renderMatches();
+
     renderMatchManagement();
 
-    alert("Wydarzenie zostało dodane.");
+    alert(
+        "Wydarzenie zostało dodane."
+    );
 }
+
 
 function deleteEvent(
     matchId,
@@ -1619,66 +2694,159 @@ function deleteEvent(
 
     if (!isAdmin) return;
 
+
     const match =
-        matches.find(m => m.id === matchId);
+        matches.find(
+            m => m.id === matchId
+        );
+
 
     if (!match) return;
 
-    match.events.splice(index, 1);
+
+    match.events.splice(
+        index,
+        1
+    );
+
 
     saveData();
 
     renderMatches();
+
     renderMatchManagement();
 }
+
 
 function clearAllData() {
 
     if (!isAdmin) return;
+
 
     const confirmation =
         confirm(
             "Czy na pewno chcesz usunąć WSZYSTKIE dane?"
         );
 
+
     if (!confirmation) return;
 
+
     teams = [];
+
     matches = [];
+
 
     saveData();
 
     updateTeamSelects();
+
     renderTeams();
+
     renderMatches();
+
     renderTable();
+
+    renderStaffManagement();
+
     renderMatchManagement();
 
-    alert("Wszystkie dane zostały usunięte.");
+
+    alert(
+        "Wszystkie dane zostały usunięte."
+    );
 }
+
 
 function escapeHTML(text) {
 
     return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
+
 function initialize() {
+
+    teams.forEach(team => {
+
+        if (!team.players) {
+            team.players = [];
+        }
+
+        if (!team.staff) {
+            team.staff = [];
+        }
+
+    });
+
+
+    matches.forEach(match => {
+
+        if (!match.homeLineup) {
+            match.homeLineup = [];
+        }
+
+        if (!match.awayLineup) {
+            match.awayLineup = [];
+        }
+
+        if (!match.homeStaff) {
+            match.homeStaff = [];
+        }
+
+        if (!match.awayStaff) {
+            match.awayStaff = [];
+        }
+
+        if (!match.events) {
+            match.events = [];
+        }
+
+    });
+
+
+    saveData();
 
     updateTeamSelects();
 
     renderTeams();
+
     renderMatches();
+
     renderTable();
+
+    renderStaffManagement();
+
 
     if (isAdmin) {
         updateAdminView();
     }
 }
+
 
 initialize();
 
