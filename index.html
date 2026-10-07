@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIGA HAMBURGERÓW</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+        }
+
+        header {
+            background: #000;
+            border-bottom: 3px solid #d4af37;
+            padding: 25px 15px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #d4af37;
+            font-size: 32px;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: #181818;
+        }
+
+        nav button {
+            background: #222;
+            color: white;
+            border: 1px solid #d4af37;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        nav button:hover {
+            background: #d4af37;
+            color: #000;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .card {
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            color: #d4af37;
+            background: #151515;
+        }
+
+        .welcome {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .welcome h2 {
+            color: #d4af37;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 24px;
+            }
+
+            th, td {
+                padding: 8px 4px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>⚽ LIGA HAMBURGERÓW ⚽</h1>
+</header>
+
+<nav>
+    <button onclick="showSection('home')">STRONA GŁÓWNA</button>
+    <button onclick="showSection('matches')">MECZE</button>
+    <button onclick="showSection('table')">TABELA</button>
+    <button onclick="showSection('teams')">DRUŻYNY</button>
+</nav>
+
+<main>
+
+    <section id="home" class="section active">
+        <div class="card welcome">
+            <h2>WITAJ W LIDZE HAMBURGERÓW</h2>
+            <p>Wyniki meczów, tabela oraz informacje o drużynach.</p>
+        </div>
+    </section>
+
+    <section id="matches" class="section">
+        <div class="card">
+            <h2>⚽ MECZE</h2>
+            <p>W tej sekcji będą wyświetlane rozegrane mecze i ich wyniki.</p>
+        </div>
+    </section>
+
+    <section id="table" class="section">
+        <div class="card">
+            <h2>🏆 TABELA</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Drużyna</th>
+                        <th>M</th>
+                        <th>Pkt</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>FC TUCHÓW</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="teams" class="section">
+        <div class="card">
+            <h2>👥 DRUŻYNY</h2>
+            <p>Lista drużyn będzie tutaj.</p>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    function showSection(sectionId) {
+        const sections = document.querySelectorAll('.section');
+
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+
+        document.getElementById(sectionId).classList.add('active');
+    }
+</script>
+
+</body>
+</html>
