@@ -296,6 +296,7 @@ th{
     }
 }
 </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -362,8 +363,11 @@ th{
     <div id="loginBox" class="card admin-box">
         <h2>🔐 Panel administratora</h2>
 
-        <label>Kod administratora</label>
-        <input id="adminCode" type="password" placeholder="Wpisz kod">
+        <label>E-mail administratora</label>
+        <input id="adminEmail" type="email" autocomplete="username" placeholder="Twój e-mail">
+
+        <label>Hasło administratora</label>
+        <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Hasło do konta Supabase">
 
         <button onclick="loginAdmin()">Zaloguj</button>
 
@@ -441,7 +445,10 @@ th{
 
 <script>
 
-const ADMIN_CODE = "ligahamburgerow26/27";
+const SUPABASE_URL = "https://faeealosunyinxrwxiyq.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_-3I_CAjhYQxRLWvEQMN47w_Z5z6t8-8";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+let supabaseUser = null;
 
 const TEAMS_KEY = "lh_teams";
 const PLAYERS_KEY = "lh_players";
@@ -469,12 +476,63 @@ if(teams.length === 0){
     saveAll();
 }
 
-let isAdmin = sessionStorage.getItem("lh_admin") === "1";
+let isAdmin = false;
+let saveQueue = Promise.resolve();
 
 function saveAll(){
     localStorage.setItem(TEAMS_KEY,JSON.stringify(teams));
     localStorage.setItem(PLAYERS_KEY,JSON.stringify(players));
     localStorage.setItem(MATCHES_KEY,JSON.stringify(matches));
+
+    // Wspólną bazę zmienia wyłącznie zalogowany administrator.
+    if(supabaseUser){
+        const payload = {
+            id: "league",
+            data: { teams, players, matches },
+            updated_at: new Date().toISOString()
+        };
+        saveQueue = saveQueue
+            .then(()=>supabaseClient.from("league_state").upsert(payload, { onConflict: "id" }))
+            .then(({error})=>{
+                if(error){
+                    console.error("Błąd zapisu Supabase:", error);
+                    alert("Nie udało się zapisać zmian w bazie. Sprawdź połączenie z Supabase.");
+                }
+            })
+            .catch(error=>{
+                console.error("Błąd zapisu Supabase:", error);
+                alert("Nie udało się zapisać zmian w bazie.");
+            });
+    }
+}
+
+async function loadRemoteState(){
+    try{
+        const {data, error} = await supabaseClient
+            .from("league_state")
+            .select("data")
+            .eq("id", "league")
+            .maybeSingle();
+
+        if(error){
+            console.error("Błąd odczytu Supabase:", error);
+            document.getElementById("loginMessage").textContent =
+                "Nie udało się połączyć z bazą. Sprawdź konfigurację Supabase.";
+            return;
+        }
+
+        if(data && data.data){
+            const state = data.data;
+            teams = Array.isArray(state.teams) ? state.teams : [];
+            players = Array.isArray(state.players) ? state.players : [];
+            matches = Array.isArray(state.matches) ? state.matches : [];
+            localStorage.setItem(TEAMS_KEY,JSON.stringify(teams));
+            localStorage.setItem(PLAYERS_KEY,JSON.stringify(players));
+            localStorage.setItem(MATCHES_KEY,JSON.stringify(matches));
+        }
+    }catch(error){
+        console.error("Błąd odczytu Supabase:", error);
+    }
 }
 
 function showSection(id){
@@ -492,37 +550,41 @@ function showSection(id){
     renderAll();
 }
 
-function loginAdmin(){
+async function loginAdmin(){
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value;
+    const message = document.getElementById("loginMessage");
 
-    const code = document.getElementById("adminCode").value;
-
-    if(code === ADMIN_CODE){
-
-        isAdmin = true;
-        sessionStorage.setItem("lh_admin","1");
-
-        document.getElementById("loginBox").classList.add("hidden");
-        document.getElementById("adminPanel").classList.remove("hidden");
-
-        document.getElementById("loginMessage").textContent = "";
-
-        renderAll();
-
-    }else{
-
-        document.getElementById("loginMessage").textContent =
-            "❌ Nieprawidłowy kod.";
-
+    if(!email || !password){
+        message.textContent = "Wpisz e-mail i hasło administratora.";
+        return;
     }
+
+    message.textContent = "Logowanie...";
+    const {data, error} = await supabaseClient.auth.signInWithPassword({email, password});
+
+    if(error){
+        message.textContent = "❌ Nie udało się zalogować. Sprawdź e-mail i hasło konta Supabase.";
+        console.error("Błąd logowania:", error);
+        return;
+    }
+
+    supabaseUser = data.user;
+    isAdmin = true;
+    message.textContent = "";
+    document.getElementById("adminPassword").value = "";
+
+    // Jeśli baza nie ma jeszcze rekordu, przenieś do niej dane z tej przeglądarki.
+    saveAll();
+    renderAll();
 }
 
-function logoutAdmin(){
-
+async function logoutAdmin(){
+    const {error} = await supabaseClient.auth.signOut();
+    if(error) console.error("Błąd wylogowania:", error);
+    supabaseUser = null;
     isAdmin = false;
-    sessionStorage.removeItem("lh_admin");
-
-    document.getElementById("loginBox").classList.remove("hidden");
-    document.getElementById("adminPanel").classList.add("hidden");
+    renderAll();
 }
 
 function addTeam(){
@@ -1949,10 +2011,17 @@ function renderAll(){
     }
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", async ()=>{
+    // Najpierw pobierz wspólny stan ligi, dopiero potem pokaż stronę.
+    await loadRemoteState();
+
+    const {data, error} = await supabaseClient.auth.getSession();
+    if(!error && data.session){
+        supabaseUser = data.session.user;
+        isAdmin = true;
+    }
 
     renderAll();
-
 });
 
 </script>
